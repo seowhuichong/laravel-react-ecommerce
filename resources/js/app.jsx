@@ -15,6 +15,7 @@ function App() {
                     <Route path="/:locale">
                         <Route index element={<Home />} />
                         <Route path="product/:friendly_url" element={<Product />} />
+                        <Route path="*" element={<div className="p-20 text-center">404 - Page Not Found</div>} />
                     </Route>
                 </Routes>
             </BrowserRouter>
