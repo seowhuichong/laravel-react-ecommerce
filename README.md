@@ -1,4 +1,4 @@
-# Big Pharmacy eCommerce Sample
+# eCommerce Website Sample
 
 An interactive, multi-language eCommerce platform built with **Laravel** (Backend API), **React** (Frontend SPA), and **MySQL** (Database). This project demonstrates high-performance routing, dynamic localization, and a seamless shopping experience.
 
