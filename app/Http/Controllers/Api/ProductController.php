@@ -18,16 +18,6 @@ class ProductController extends Controller
 
     public function getInfoByFriendlyUrl($friendly_url)
     {
-        $product = ProductTranslation::with('product')
-            ->where('language_code', app()->getLocale())
-            ->where('product_friendly_url', $friendly_url)
-            ->firstOrFail();
-
-        return response()->json($product);
-    }
-
-    public function getInfoByFriendlyUrlAdvanced($friendly_url)
-    {
         $currentTranslation = ProductTranslation::where('product_friendly_url', $friendly_url)
             ->where('language_code', app()->getLocale())
             ->firstOrFail();
