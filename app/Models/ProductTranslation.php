@@ -13,14 +13,15 @@ class ProductTranslation extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'products_id ',
+        'products_id',
         'product_name',
         'product_description',
+        'product_friendly_url',
         'language_code',
     ];
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'products_id', 'products_id');
+        return $this->belongsTo(Product::class , 'products_id', 'products_id');
     }
 }

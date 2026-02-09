@@ -6,11 +6,9 @@ export const translations = {
         out_of_stock: "Out of Stock",
         select_language: "Select language",
         search_placeholder: "Search products...",
-        free_shipping_promo: "Free shipping on orders over $50!",
+        error_loading_product: "Product not found",
         account: "Account",
         cart: "Cart",
-        all_categories: "All Categories",
-        hot_deals: "Hot Deals",
     },
     ms: {
         add_to_cart: "Tambah ke Bakul",
@@ -19,11 +17,9 @@ export const translations = {
         out_of_stock: "Stok Habis",
         select_language: "Pilih bahasa",
         search_placeholder: "Cari produk...",
-        free_shipping_promo: "Free shipping on orders over $50!",
+        error_loading_product: "Product not found",
         account: "Account",
         cart: "Cart",
-        all_categories: "All Categories",
-        hot_deals: "Hot Deals",
     },
     zh: {
         add_to_cart: "加入购物车",
@@ -32,10 +28,8 @@ export const translations = {
         out_of_stock: "缺货",
         select_language: "选择语言",
         search_placeholder: "搜索产品...",
-        free_shipping_promo: "Free shipping on orders over $50!",
+        error_loading_product: "Product not found",
         account: "Account",
         cart: "Cart",
-        all_categories: "All Categories",
-        hot_deals: "Hot Deals",
     }
 };

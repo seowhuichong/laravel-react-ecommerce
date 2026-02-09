@@ -13,7 +13,6 @@ class Product extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'product_friendly_url',
         'product_price',
         'product_image',
     ];

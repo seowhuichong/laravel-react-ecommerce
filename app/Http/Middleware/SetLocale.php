@@ -16,19 +16,27 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $urlLocale = $request->segment(1);
-        $supportedLocales = ['en', 'ms', 'zh'];
+        // $urlLocale = $request->segment(1);
+        // $supportedLocales = ['en', 'ms', 'zh'];
 
-        if (in_array($urlLocale, $supportedLocales)) {
-            $locale = $urlLocale;
-        } else {
-            $locale = $request->header('X-Locale') ?: session('locale', config('app.locale'));
+        // if (in_array($urlLocale, $supportedLocales)) {
+        //     $locale = $urlLocale;
+        // } else {
+        //     $locale = $request->header('X-Locale') ?: session('locale', config('app.locale'));
+        // }
+        // App::setLocale($locale);
+
+        // if ($request->hasSession() && session('locale') !== $locale) {
+        //     session(['locale' => $locale]);
+        // }
+
+        $locale = $request->route('locale');
+
+        if (! in_array($locale, ['en', 'ms', 'zh'])) {
+            $locale = config('app.locale');
         }
+
         App::setLocale($locale);
-
-        if ($request->hasSession() && session('locale') !== $locale) {
-            session(['locale' => $locale]);
-        }
 
         return $next($request);
     }

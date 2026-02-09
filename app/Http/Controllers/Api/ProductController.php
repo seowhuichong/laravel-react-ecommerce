@@ -16,10 +16,12 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function getInfoByFriendlyUrl($friendly_url)
+    public function getInfoByFriendlyUrl($locale, $friendly_url)
     {
+        app()->setLocale($locale);
+
         $currentTranslation = ProductTranslation::where('product_friendly_url', $friendly_url)
-            ->where('language_code', app()->getLocale())
+            ->where('language_code', $locale)
             ->firstOrFail();
 
         $allTranslations = ProductTranslation::where('products_id', $currentTranslation->products_id)

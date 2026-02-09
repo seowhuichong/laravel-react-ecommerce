@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
 
 export const LocaleContext = createContext();
 
@@ -13,10 +12,7 @@ export const LocaleProvider = ({ children }) => {
     const [locale, setLocale] = useState(getLocaleFromUrl());
     const [availableSlugs, setAvailableSlugs] = useState({});
 
-    axios.defaults.headers.common['X-Locale'] = locale;
-
     useEffect(() => {
-        axios.defaults.headers.common['X-Locale'] = locale;
         document.documentElement.lang = locale;
     }, [locale]);
 

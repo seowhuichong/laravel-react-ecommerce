@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
-    <title>My React SPA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>eCommerce Site</title>
+    <meta name="description" content="Shop the best products online.">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
     @viteReactRefresh

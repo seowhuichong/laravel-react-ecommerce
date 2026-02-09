@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             SetLocale::class,
         ]);
 
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
         $middleware->api(append: [
             SetLocale::class,
         ]);

@@ -1,119 +1,275 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import LanguageSwitcher from './LanguageSwitcher';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { LocaleContext } from '../context/LocaleContext';
+import { AuthContext } from '../context/AuthContext';
+import {
+    Search,
+    MapPin,
+    User,
+    Heart,
+    ShoppingCart,
+    ChevronDown
+} from 'lucide-react';
 
-const BigHeader = () => {
-    const [searchOpen, setSearchOpen] = useState(false);
-    const [activeMenu, setActiveMenu] = useState(null);
-    const { availableSlugs } = useContext(LocaleContext);
-    const searchRef = useRef(null);
+function Header() {
+    const { locale } = useContext(LocaleContext);
+    const { user, logout } = useContext(AuthContext);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All Categories');
+    const [showUserMenu, setShowUserMenu] = useState(false);
+    const navigate = useNavigate();
+    const userMenuRef = useRef(null);
 
-    // Close search when clicking outside
+    // Close user menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setSearchOpen(false);
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setShowUserMenu(false);
             }
         };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/${locale}/search?q=${searchQuery}&category=${selectedCategory}`);
+        }
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        setShowUserMenu(false);
+        navigate(`/${locale}`);
+    };
+
     const categories = [
-        { name: 'Health Care', sub: ['Vitamins', 'Supplements', 'First Aid'] },
-        { name: 'Personal Care', sub: ['Oral Care', 'Hair Care', 'Body Wash'] },
-        { name: 'Mother & Baby', sub: ['Diapers', 'Milk Powder', 'Baby Wipes'] }
+        'All Categories',
+        'Supplement',
+        'Food & Beverage',
+        'Medical Supplies',
+        'Mom & Baby',
+        'Skin Care',
+        'Personal Care'
     ];
 
     return (
-        <header className="w-full relative bg-white border-b border-gray-200">
-            {/* 1. TOP PROMO BAR */}
-            <div className="bg-[#ee1c25] text-white py-1.5 px-4 text-center text-xs font-bold uppercase tracking-widest">
-                Lowest Price Guaranteed • Free Shipping RM80 & Above
+        <header className="w-full">
+            {/* Promo Banner */}
+            <div className="bg-red-600 text-white text-center py-2 px-4 text-sm">
+                Free Shipping for Orders above RM100 (Discount Capped at RM6).
             </div>
 
-            {/* 2. MAIN NAV AREA */}
-            <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-                {/* Logo */}
-                <div className="flex-shrink-0">
-                    <a href="/" className="text-3xl font-black italic">
-                        <span className="text-[#ee1c25]">BIG</span>
-                        <span className="text-[#00529b]">PHARMACY</span>
-                    </a>
-                </div>
+            {/* Main Header */}
+            <div className="bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 py-4">
+                    <div className="flex items-center justify-between gap-6">
+                        {/* Logo */}
+                        <Link to={`/${locale}`} className="flex-shrink-0">
+                            <img
+                                src="/images/logo.png"
+                                alt="BIG Pharmacy"
+                                className="h-12"
+                            />
+                        </Link>
 
-                {/* Search Interaction */}
-                <div className="flex-1 max-w-xl px-10 relative" ref={searchRef}>
-                    <div
-                        onClick={() => setSearchOpen(true)}
-                        className={`flex items-center bg-gray-100 rounded-full px-5 py-2.5 cursor-text transition-all ${searchOpen ? 'ring-2 ring-blue-500 bg-white shadow-lg' : ''}`}
-                    >
-                        <span className="text-gray-400 mr-2">🔍</span>
-                        <input
-                            type="text"
-                            placeholder="Search brands, products..."
-                            className="bg-transparent border-none outline-none w-full text-sm"
-                        />
-                    </div>
-
-                    {/* SEARCH POPUP (The "Big" Feel) */}
-                    {searchOpen && (
-                        <div className="absolute top-full left-10 right-10 mt-2 bg-white shadow-2xl rounded-xl border border-gray-100 p-5 z-[100] animate-in fade-in slide-in-from-top-2">
-                            <p className="text-xs font-bold text-gray-400 uppercase mb-3">Popular Searches</p>
-                            <div className="flex flex-wrap gap-2">
-                                {['Panadol', 'Mask', 'Vitamin C', 'Artelac'].map(tag => (
-                                    <span key={tag} className="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-blue-100 cursor-pointer">{tag}</span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Icons & Language */}
-                <div className="flex items-center gap-6">
-                    <LanguageSwitcher
-                        availableSlugs={availableSlugs}
-                        pathPattern="/product/:friendly_url"
-                    />
-                    <div className="h-8 w-[1px] bg-gray-200 mx-2"></div>
-                    <div className="flex gap-5 text-gray-600">
-                        <button className="relative">🛒<span className="absolute -top-2 -right-2 bg-[#ee1c25] text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">0</span></button>
-                        <button>👤</button>
-                    </div>
-                </div>
-            </div>
-
-            {/* 3. CATEGORY TABS (The Pop-up Menu) */}
-            <nav className="border-t border-gray-100 px-4">
-                <div className="max-w-7xl mx-auto flex gap-10">
-                    {categories.map((cat, idx) => (
-                        <div
-                            key={idx}
-                            onMouseEnter={() => setActiveMenu(idx)}
-                            onMouseLeave={() => setActiveMenu(null)}
-                            className="py-3 relative group"
-                        >
-                            <button className="text-[13px] font-bold uppercase tracking-tight text-gray-700 group-hover:text-[#ee1c25] transition-colors flex items-center gap-1">
-                                {cat.name}
-                                <span className="text-[8px]">▼</span>
-                            </button>
-
-                            {/* MEGA MENU POPUP */}
-                            {activeMenu === idx && (
-                                <div className="absolute top-full left-0 w-[250px] bg-white shadow-xl border-t-2 border-[#ee1c25] py-4 z-[90]">
-                                    {cat.sub.map((sub, sIdx) => (
-                                        <a key={sIdx} href="#" className="block px-6 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#ee1c25]">
-                                            {sub}
-                                        </a>
-                                    ))}
+                        {/* Search Bar */}
+                        <form onSubmit={handleSearch} className="flex-1 max-w-3xl">
+                            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+                                {/* Category Dropdown */}
+                                <div className="relative">
+                                    <select
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        className="appearance-none bg-gray-50 border-r border-gray-300 px-4 py-3 pr-10 text-sm focus:outline-none cursor-pointer"
+                                    >
+                                        {categories.map((cat) => (
+                                            <option key={cat} value={cat}>
+                                                {cat}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
                                 </div>
-                            )}
+
+                                {/* Search Input */}
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="What are you looking for?"
+                                    className="flex-1 px-4 py-3 text-sm focus:outline-none"
+                                />
+
+                                {/* Search Button */}
+                                <button
+                                    type="submit"
+                                    className="bg-gray-100 hover:bg-gray-200 px-6 py-3 transition-colors"
+                                >
+                                    <Search className="w-5 h-5 text-gray-700" />
+                                </button>
+                            </div>
+                        </form>
+
+                        {/* Right Icons */}
+                        <div className="flex items-center gap-6">
+                            {/* Find a Store */}
+                            <Link
+                                to={`/${locale}/stores`}
+                                className="flex items-center gap-2 text-sm text-gray-700 hover:text-red-600 transition-colors"
+                            >
+                                <MapPin className="w-5 h-5" />
+                                <span className="hidden lg:inline">Find a store</span>
+                            </Link>
+
+                            {/* Sign In / Register OR User Menu */}
+                            <div className="relative" ref={userMenuRef}>
+                                {user ? (
+                                    // Logged in - show user menu
+                                    <>
+                                        <button
+                                            onClick={() => setShowUserMenu(!showUserMenu)}
+                                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-red-600 transition-colors"
+                                        >
+                                            <User className="w-5 h-5" />
+                                            <span className="hidden lg:inline">{user.name.split(' ')[0]}</span>
+                                            <ChevronDown className="w-3 h-3 hidden lg:inline" />
+                                        </button>
+
+                                        {/* User Dropdown */}
+                                        {showUserMenu && (
+                                            <div className="absolute right-0 top-full mt-2 w-56 bg-white shadow-lg rounded-lg border border-gray-200 py-2 z-50">
+                                                <div className="px-4 py-3 border-b border-gray-100">
+                                                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                                                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                                </div>
+                                                <Link
+                                                    to={`/${locale}/account`}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    My Account
+                                                </Link>
+                                                <Link
+                                                    to={`/${locale}/orders`}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    My Orders
+                                                </Link>
+                                                <Link
+                                                    to={`/${locale}/wishlist`}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    Wishlist
+                                                </Link>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-gray-100 mt-1"
+                                                >
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    // Not logged in - show sign in link
+                                    <Link
+                                        to={`/${locale}/login`}
+                                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-red-600 transition-colors"
+                                    >
+                                        <User className="w-5 h-5" />
+                                        <span className="hidden lg:inline">Sign in/ Register</span>
+                                    </Link>
+                                )}
+                            </div>
+
+                            {/* Wishlist */}
+                            <Link
+                                to={`/${locale}/wishlist`}
+                                className="text-gray-700 hover:text-red-600 transition-colors"
+                            >
+                                <Heart className="w-6 h-6" />
+                            </Link>
+
+                            {/* Cart */}
+                            <Link
+                                to={`/${locale}/cart`}
+                                className="relative text-gray-700 hover:text-red-600 transition-colors"
+                            >
+                                <ShoppingCart className="w-6 h-6" />
+                                {/* Cart Count Badge */}
+                                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    0
+                                </span>
+                            </Link>
                         </div>
-                    ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Navigation Menu */}
+            <nav className="bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4">
+                    <ul className="flex items-center gap-8 text-sm font-medium">
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Supplement
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                            {/* Dropdown would go here */}
+                        </li>
+
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Food & Beverage
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                        </li>
+
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Medical Supplies
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                        </li>
+
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Mom & Baby
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                        </li>
+
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Skin Care
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                        </li>
+
+                        <li className="relative group">
+                            <button className="flex items-center gap-2 py-4 text-gray-800 hover:text-red-600 transition-colors">
+                                Personal Care
+                                <ChevronDown className="w-4 h-4" />
+                            </button>
+                        </li>
+
+                        <li>
+                            <Link
+                                to={`/${locale}/member-benefits`}
+                                className="block py-4 text-gray-800 hover:text-red-600 transition-colors"
+                            >
+                                Member Benefits
+                            </Link>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </header>
     );
-};
+}
 
-export default BigHeader;
+export default Header;

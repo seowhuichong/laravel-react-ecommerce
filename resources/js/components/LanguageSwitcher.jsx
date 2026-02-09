@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LocaleContext } from '../context/LocaleContext';
+import { ChevronDown } from 'lucide-react';
 
 const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
     const { locale, switchLanguage } = useContext(LocaleContext);
     const navigate = useNavigate();
 
-    // Config for display names
     const languages = [
         { code: 'en', label: 'EN' },
         { code: 'ms', label: 'BM' },
@@ -18,11 +18,9 @@ const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
 
         const targetSlug = availableSlugs?.[newLocale];
 
-        // Build the path as an absolute string starting with /
         let finalPath = "";
 
         if (targetSlug && pathPattern) {
-            // Remove leading/trailing slashes from pattern to control the join
             const cleanPattern = pathPattern
                 .replace(':friendly_url', targetSlug)
                 .replace(/^\/|\/$/g, '');
@@ -32,32 +30,27 @@ const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
             finalPath = `/${newLocale}`;
         }
 
-        console.log("Navigating to:", finalPath); // Debug this!
-
         switchLanguage(newLocale);
-
-        // The '/' at the start of finalPath is critical to prevent /en/ms/
         navigate(finalPath);
     };
 
     return (
-        <div className="flex items-center gap-3 text-[12px] font-semibold tracking-wide">
-            {languages.map((lang, index) => (
-                <React.Fragment key={lang.code}>
-                    <button
-                        onClick={() => handleSwitch(lang.code)}
-                        className={`transition-colors duration-200 ${locale === lang.code
-                            ? 'text-green-600 underline underline-offset-4'
-                            : 'text-gray-400 hover:text-gray-600'
-                            }`}
-                    >
-                        {lang.label}
-                    </button>
-                    {index < languages.length - 1 && (
-                        <span className="text-gray-300 font-light">|</span>
-                    )}
-                </React.Fragment>
-            ))}
+        <div className="mt-8">
+            <label className="block text-sm text-gray-400 mb-2">Country/region</label>
+            <div className="relative inline-block">
+                <select
+                    value={locale}
+                    onChange={(e) => handleSwitch(e.target.value)}
+                    className="appearance-none bg-transparent border border-gray-700 rounded-full px-6 py-2 pr-10 text-sm text-white cursor-pointer hover:border-gray-600 transition-colors focus:outline-none focus:border-white"
+                >
+                    {languages.map((lang) => (
+                        <option key={lang.code} value={lang.code} className="bg-black">
+                            {lang.label}
+                        </option>
+                    ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
         </div>
     );
 };
