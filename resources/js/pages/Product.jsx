@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { LocaleContext } from '../context/LocaleContext';
+import { useLocale } from '../context/LocaleContext';
 import { useTranslation } from '../hooks/useTranslation';
 import SEO from '../components/SEO';
 
@@ -12,7 +12,7 @@ const Product = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { t } = useTranslation();
-    const { locale, setAvailableSlugs } = useContext(LocaleContext)
+    const { locale, setAvailableSlugs } = useLocale()
 
     useEffect(() => {
         setLoading(true);

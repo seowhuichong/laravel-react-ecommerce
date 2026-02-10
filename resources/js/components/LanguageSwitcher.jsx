@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LocaleContext } from '../context/LocaleContext';
+import { useLocale } from '../context/LocaleContext';
 import { ChevronDown } from 'lucide-react';
 
 const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
-    const { locale, switchLanguage } = useContext(LocaleContext);
+    const { locale, switchLanguage } = useLocale();
     const navigate = useNavigate();
 
     const languages = [
@@ -36,7 +36,7 @@ const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
 
     return (
         <div className="mt-8">
-            <label className="block text-sm text-gray-400 mb-2">Country/region</label>
+            <label className="block text-sm text-gray-400 mb-2">Language</label>
             <div className="relative inline-block">
                 <select
                     value={locale}

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LocaleContext } from '../context/LocaleContext';
-import { AuthContext } from '../context/AuthContext';
+import { useLocale } from '../context/LocaleContext';
+import { useAuth } from '../context/AuthContext';
 import {
     Search,
     MapPin,
@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 
 function Header() {
-    const { locale } = useContext(LocaleContext);
-    const { user, logout } = useContext(AuthContext);
+    const { locale } = useLocale();
+    const { user, logout } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
     const [showUserMenu, setShowUserMenu] = useState(false);

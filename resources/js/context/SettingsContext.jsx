@@ -1,17 +1,15 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { LocaleContext } from './LocaleContext';
+import { useLocale } from './LocaleContext';
 
 export const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
-    const { locale } = useContext(LocaleContext);
-    // Initialize with pre-loaded settings from window.AppConfig if available
+    const { locale } = useLocale();
     const [settings, setSettings] = useState(window.AppConfig?.settings || {});
     const [loading, setLoading] = useState(!window.AppConfig?.settings);
 
     useEffect(() => {
-        // Only fetch settings if they weren't pre-loaded
         if (!window.AppConfig?.settings && locale) {
             const fetchSettings = async () => {
                 try {

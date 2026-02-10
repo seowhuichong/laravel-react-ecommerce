@@ -1,12 +1,12 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LocaleContext } from '../context/LocaleContext';
 import { Facebook, Linkedin, Instagram } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLocale } from '../context/LocaleContext';
 import { useSettings } from '../context/SettingsContext';
 
 function Footer() {
-    const { locale, availableSlugs } = useContext(LocaleContext);
+    const { locale, availableSlugs } = useLocale();
     const { settings } = useSettings();
     const location = useLocation();
 
@@ -78,7 +78,7 @@ function Footer() {
                             />
                         </Link>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            {settings?.company?.description || 'At BIG Pharmacy, we strive to be the most affordable pharmacy chain in Malaysia. We offer a wide range of products from organic food, supplements, rehabilitation supplies to health & beauty categories. Think pharmacy, think BIG.'}
+                            {settings?.company?.description}
                         </p>
                     </div>
 
@@ -167,7 +167,7 @@ function Footer() {
                 {/* Social Media Icons */}
                 <div className="mt-12 flex gap-4">
                     <a
-                        href={settings?.social?.facebook_url || "https://facebook.com/bigpharmacy"}
+                        href={settings?.social?.facebook_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
@@ -176,7 +176,7 @@ function Footer() {
                         <Facebook className="w-5 h-5" />
                     </a>
                     <a
-                        href={settings?.social?.linkedin_url || "https://linkedin.com/company/bigpharmacy"}
+                        href={settings?.social?.linkedin_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
@@ -185,7 +185,7 @@ function Footer() {
                         <Linkedin className="w-5 h-5" />
                     </a>
                     <a
-                        href={settings?.social?.instagram_url || "https://instagram.com/bigpharmacy"}
+                        href={settings?.social?.instagram_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
@@ -207,7 +207,7 @@ function Footer() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         {/* Copyright */}
                         <p className="text-gray-400 text-sm text-center md:text-left">
-                            {settings?.company?.copyright || '© 2026 CARING EStore Sdn Bhd Registration No.: 200901038640 (881773-W). All Rights Reserved.'}
+                            {settings?.company?.copyright}
                         </p>
 
                         {/* Legal Links */}

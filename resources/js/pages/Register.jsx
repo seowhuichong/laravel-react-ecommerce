@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { LocaleContext } from '../context/LocaleContext';
+import { useAuth } from '../context/AuthContext';
+import { useLocale } from '../context/LocaleContext';
 import { User, Mail, Lock, Phone, Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
 import SEO from '../components/SEO';
 
 function Register() {
-    const { locale } = useContext(LocaleContext);
-    const { register } = useContext(AuthContext);
+    const { locale } = useLocale();
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

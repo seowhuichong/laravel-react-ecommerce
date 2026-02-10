@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { LocaleContext } from '../context/LocaleContext';
+import { useAuth } from '../context/AuthContext';
+import { useLocale } from '../context/LocaleContext';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 
 function Login() {
-    const { locale } = useContext(LocaleContext);
-    const { login } = useContext(AuthContext);
+    const { locale } = useLocale();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

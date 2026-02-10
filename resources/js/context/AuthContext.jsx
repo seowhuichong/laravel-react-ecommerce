@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 export const AuthContext = createContext();
@@ -36,22 +36,22 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         const response = await axios.post('/api/login', { email, password });
         const { access_token, user } = response.data;
-        
+
         localStorage.setItem('auth_token', access_token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
         setUser(user);
-        
+
         return response.data;
     };
 
     const register = async (userData) => {
         const response = await axios.post('/api/register', userData);
         const { access_token, user } = response.data;
-        
+
         localStorage.setItem('auth_token', access_token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
         setUser(user);
-        
+
         return response.data;
     };
 
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout error:', error);
         }
-        
+
         localStorage.removeItem('auth_token');
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);
@@ -73,3 +73,11 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within a AuthProvider');
+    }
+    return context;
+}
