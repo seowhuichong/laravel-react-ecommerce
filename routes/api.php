@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class , 'register']);
@@ -17,4 +18,5 @@ Route::prefix('{locale}')
     ->where(['locale' => 'en|ms|zh'])
     ->group(function () {
         Route::get('/products/{friendly_url}', [ProductController::class , 'getInfoByFriendlyUrl']);
+        Route::get('/settings', [SettingsController::class , 'index']);
     });
