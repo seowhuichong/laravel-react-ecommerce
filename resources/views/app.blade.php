@@ -15,7 +15,8 @@
     @endif
     <script>
         window.AppConfig = {
-            locale: "{{ app()->getLocale() }}"
+            locale: "{{ app()->getLocale() }}",
+            settings: @json($settings ?? [])
         };
     </script>
 </head>

@@ -6,23 +6,24 @@ export const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
     const { locale } = useContext(LocaleContext);
-    const [settings, setSettings] = useState({});
-    const [loading, setLoading] = useState(true);
+    // Initialize with pre-loaded settings from window.AppConfig if available
+    const [settings, setSettings] = useState(window.AppConfig?.settings || {});
+    const [loading, setLoading] = useState(!window.AppConfig?.settings);
 
     useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                // We use the current locale for the API call
-                const response = await axios.get(`/api/${locale}/settings`);
-                setSettings(response.data.data);
-            } catch (error) {
-                console.error('Failed to fetch settings:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        // Only fetch settings if they weren't pre-loaded
+        if (!window.AppConfig?.settings && locale) {
+            const fetchSettings = async () => {
+                try {
+                    const response = await axios.get(`/api/${locale}/settings`);
+                    setSettings(response.data.data);
+                } catch (error) {
+                    console.error('Failed to fetch settings:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
 
-        if (locale) {
             fetchSettings();
         }
     }, [locale]);

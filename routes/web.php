@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Services\SettingsService;
 
 $locales = ['en', 'ms', 'zh'];
 $localePattern = implode('|', $locales);
@@ -18,10 +19,12 @@ Route::group([
     'where' => ['locale' => $localePattern],
     'middleware' => [\App\Http\Middleware\SetLocale::class]
 ], function () {
-    Route::get('/{any?}', function () {
-        return view('app');
-    })->where('any', '.*');
-});
+    Route::get('/{any?}', function (SettingsService $settingsService) {
+            return view('app', [
+            'settings' => $settingsService->all()
+            ]);
+        }
+        )->where('any', '.*');    });
 
 Route::get('/', function () {
     return redirect('/en');
