@@ -15,7 +15,7 @@ print_r($allSettings);
 
 // Test via HTTP request simulation
 echo "\n\nAPI Endpoint Test:\n";
-$request = Illuminate\Http\Request::create('/api/en/settings', 'GET');
+$request = Illuminate\Http\Request::create('/api/en-MY/settings', 'GET');
 $response = $kernel->handle($request);
 
 echo "Status: " . $response->getStatusCode() . "\n";

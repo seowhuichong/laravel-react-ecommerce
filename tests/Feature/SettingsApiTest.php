@@ -26,22 +26,22 @@ class SettingsApiTest extends TestCase
             'group' => 'social',
         ]);
 
-        $response = $this->getJson('/api/en/settings');
+        $response = $this->getJson('/api/en-MY/settings');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-            'data' => [
-                'seo' => [
-                    'title'
+                'data' => [
+                    'seo' => [
+                        'title'
+                    ],
+                    'social' => [
+                        'facebook'
+                    ]
                 ],
-                'social' => [
-                    'facebook'
+                'meta' => [
+                    'timestamp'
                 ]
-            ],
-            'meta' => [
-                'timestamp'
-            ]
-        ]);
+            ]);
 
         $response->assertJsonPath('data.seo.title', 'Test Title');
     }

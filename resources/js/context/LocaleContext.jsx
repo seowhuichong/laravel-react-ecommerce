@@ -5,12 +5,11 @@ export const LocaleContext = createContext();
 export const LocaleProvider = ({ children }) => {
     const getLocaleFromUrl = () => {
         const path = window.location.pathname.split('/')[1];
-        const supported = ['en', 'ms', 'zh'];
-        return supported.includes(path) ? path : 'en';
+        const supported = ['en-MY', 'ms-MY', 'zh-CN'];
+        return supported.includes(path) ? path : 'en-MY';
     };
 
     const [locale, setLocale] = useState(getLocaleFromUrl());
-    const [availableSlugs, setAvailableSlugs] = useState({});
 
     useEffect(() => {
         document.documentElement.lang = locale;
@@ -21,7 +20,7 @@ export const LocaleProvider = ({ children }) => {
     };
 
     return (
-        <LocaleContext.Provider value={{ locale, availableSlugs, setAvailableSlugs, switchLanguage }}>
+        <LocaleContext.Provider value={{ locale, switchLanguage }}>
             {children}
         </LocaleContext.Provider>
     );

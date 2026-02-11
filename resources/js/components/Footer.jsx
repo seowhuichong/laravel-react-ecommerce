@@ -1,36 +1,13 @@
-import React, { useState, useContext, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Linkedin, Instagram } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLocale } from '../context/LocaleContext';
 import { useSettings } from '../context/SettingsContext';
 
 function Footer() {
-    const { locale, availableSlugs } = useLocale();
+    const { locale } = useLocale();
     const { settings } = useSettings();
-    const location = useLocation();
-
-    // Automatically determine the path pattern based on current route
-    const pathPattern = useMemo(() => {
-        const path = location.pathname;
-
-        // Remove locale prefix to get the actual path
-        const pathWithoutLocale = path.replace(`/${locale}`, '') || '/';
-
-        // Match different route patterns
-        if (pathWithoutLocale.startsWith('/product/')) {
-            return '/product/:friendly_url';
-        } else if (pathWithoutLocale.startsWith('/category/')) {
-            return '/category/:friendly_url';
-        } else if (pathWithoutLocale === '/login') {
-            return '/login';
-        } else if (pathWithoutLocale === '/register') {
-            return '/register';
-        }
-
-        // Default to home pattern
-        return '/';
-    }, [location.pathname, locale]);
 
     const companyLinks = [
         { name: 'Big Caring Group', url: '/big-caring-group' },
@@ -195,10 +172,7 @@ function Footer() {
                     </a>
                 </div>
 
-                <LanguageSwitcher
-                    availableSlugs={availableSlugs}
-                    pathPattern={pathPattern}
-                />
+                <LanguageSwitcher />
             </div>
 
             {/* Bottom Bar - Copyright and Legal Links */}

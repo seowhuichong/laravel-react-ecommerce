@@ -6,7 +6,7 @@ export const useTranslation = () => {
     const { locale } = useLocale();
 
     const t = (key) => {
-        return translations[locale]?.[key] || translations['en']?.[key] || key;
+        return translations[locale]?.[key] || translations['en-MY']?.[key] || key;
     };
 
     return { t, locale };

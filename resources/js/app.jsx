@@ -21,7 +21,7 @@ function App() {
                         <BrowserRouter>
                             <Header />
                             <Routes>
-                                <Route path="/" element={<Navigate to="/en" replace />} />
+                                <Route path="/" element={<Navigate to="/en-MY" replace />} />
                                 <Route path="/:locale">
                                     <Route index element={<Home />} />
                                     <Route path="product/:friendly_url" element={<Product />} />

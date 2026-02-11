@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Services\SettingsService;
 
-$locales = ['en', 'ms', 'zh'];
+$locales = ['en-MY', 'ms-MY', 'zh-CN'];
 $localePattern = implode('|', $locales);
 
 Route::post('/api/set-locale', function (Request $request) {
@@ -19,17 +19,20 @@ Route::group([
     'where' => ['locale' => $localePattern],
     'middleware' => [\App\Http\Middleware\SetLocale::class]
 ], function () {
-    Route::get('/{any?}', function (SettingsService $settingsService) {
+    Route::get(
+        '/{any?}',
+        function (SettingsService $settingsService) {
             return view('app', [
-            'settings' => $settingsService->all()
+                'settings' => $settingsService->all()
             ]);
         }
-        )->where('any', '.*');    });
+    )->where('any', '.*');
+});
 
 Route::get('/', function () {
-    return redirect('/en');
+    return redirect('/en-MY');
 });
 
 Route::get('/{any}', function ($any) {
-    return redirect('/en/' . $any);
+    return redirect('/en-MY/' . $any);
 })->where('any', '^(?!api).*');

@@ -1,34 +1,26 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLocale } from '../context/LocaleContext';
 import { ChevronDown } from 'lucide-react';
 
-const LanguageSwitcher = ({ availableSlugs, pathPattern }) => {
+const LanguageSwitcher = () => {
     const { locale, switchLanguage } = useLocale();
+    const location = useLocation();
     const navigate = useNavigate();
 
     const languages = [
-        { code: 'en', label: 'EN' },
-        { code: 'ms', label: 'BM' },
-        { code: 'zh', label: '中文' }
+        { code: 'en-MY', label: 'EN' },
+        { code: 'ms-MY', label: 'BM' },
+        { code: 'zh-CN', label: '中文' }
     ];
 
     const handleSwitch = (newLocale) => {
         if (newLocale === locale) return;
 
-        const targetSlug = availableSlugs?.[newLocale];
+        const path = location.pathname;
+        const pathWithoutLocale = path.replace(`/${locale}`, '') || '/';
 
-        let finalPath = "";
-
-        if (targetSlug && pathPattern) {
-            const cleanPattern = pathPattern
-                .replace(':friendly_url', targetSlug)
-                .replace(/^\/|\/$/g, '');
-
-            finalPath = `/${newLocale}/${cleanPattern}`;
-        } else {
-            finalPath = `/${newLocale}`;
-        }
+        let finalPath = `/${newLocale}/${pathWithoutLocale}`;
 
         switchLanguage(newLocale);
         navigate(finalPath);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocale } from '../context/LocaleContext';
@@ -12,14 +12,13 @@ const Product = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { t } = useTranslation();
-    const { locale, setAvailableSlugs } = useLocale()
+    const { locale } = useLocale()
 
     useEffect(() => {
         setLoading(true);
         axios.get(`/api/${locale}/products/${friendly_url}`)
             .then(res => {
                 setProduct(res.data.product);
-                setAvailableSlugs(res.data.slugs);
                 setLoading(false);
             })
             .catch(err => {
@@ -31,8 +30,7 @@ const Product = () => {
                 }
             });
 
-        return () => setAvailableSlugs({});
-    }, [friendly_url, setAvailableSlugs]);
+    }, [locale, friendly_url]);
 
     if (loading) return <div className="p-10 text-center">{t('loading')}...</div>;
     if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
