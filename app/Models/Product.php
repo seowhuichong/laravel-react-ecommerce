@@ -13,17 +13,23 @@ class Product extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'product_sku',
+        'product_barcode',
+        'product_vendor',
         'product_price',
+        'product_retail_price',
+        'product_weight',
         'product_image',
+        'product_status',
+        'product_friendly_url'
     ];
 
     protected $casts = [
         'product_price' => 'decimal:2',
     ];
 
-    public function description()
+    public function translations()
     {
-        return $this->hasOne(ProductTranslation::class, 'products_id', 'products_id')
-            ->where('language_code', app()->getLocale());
+        return $this->hasMany(ProductTranslation::class, 'products_id', 'products_id');
     }
 }

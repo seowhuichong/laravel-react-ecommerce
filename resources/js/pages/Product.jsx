@@ -18,7 +18,8 @@ const Product = () => {
         setLoading(true);
         axios.get(`/api/${locale}/products/${friendly_url}`)
             .then(res => {
-                setProduct(res.data.product);
+                console.log(res);
+                setProduct(res.data);
                 setLoading(false);
             })
             .catch(err => {
@@ -38,16 +39,16 @@ const Product = () => {
     return (
         <>
             <SEO
-                title={product.product_name}
-                description={product.product_description}
+                title={product.translation.product_meta_title}
+                description={product.translation.product_meta_description}
                 path={`/product/${product.product_friendly_url}`}
-                image={product.product.product_image}
+                image={product.product_image}
                 type="product"
             />
             <div className="product-page">
-                <h1>{product.product_name}</h1>
-                <p>{product.product_description}</p>
-                <p>{t('price')}: RM{product.product.product_price}</p>
+                <h1>{product.translation.product_name}</h1>
+                <p>{product.translation.product_description}</p>
+                <p>{t('price')}: RM{product.product_price}</p>
             </div>
         </>
     );

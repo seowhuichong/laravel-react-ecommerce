@@ -18,21 +18,32 @@ class ProductController extends Controller
 
     public function getInfoByFriendlyUrl($locale, $friendly_url)
     {
-        app()->setLocale($locale);
-
-        $currentTranslation = ProductTranslation::where('product_friendly_url', $friendly_url)
-            ->where('language_code', $locale)
+        $product = Product::where('product_friendly_url', $friendly_url)
+            ->with(['translations' => function ($query) use ($locale) {
+                $query->where('language_code', $locale);
+            }])
             ->firstOrFail();
 
-        $allTranslations = ProductTranslation::where('products_id', $currentTranslation->products_id)
-            ->get(['language_code', 'product_friendly_url'])
-            ->pluck('product_friendly_url', 'language_code');
+        $product->translation = $product->translations->first();
+        unset($product->translations);
 
-        $productData = $currentTranslation->load('product');
+        return response()->json($product);
 
-        return response()->json([
-            'product' => $productData,
-            'slugs' => $allTranslations
-        ]);
+        // app()->setLocale($locale);
+
+        // $currentTranslation = ProductTranslation::where('product_friendly_url', $friendly_url)
+        //     ->where('language_code', $locale)
+        //     ->firstOrFail(); 
+
+        // $allTranslations = ProductTranslation::where('products_id', $currentTranslation->products_id)
+        //     ->get(['language_code', 'product_friendly_url'])
+        //     ->pluck('product_friendly_url', 'language_code');
+
+        // $productData = $currentTranslation->load('product');
+
+        // return response()->json([
+        //     'product' => $productData,
+        //     'slugs' => $allTranslations
+        // ]);
     }
 }
