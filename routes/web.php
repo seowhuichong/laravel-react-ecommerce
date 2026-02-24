@@ -29,10 +29,14 @@ Route::group([
     )->where('any', '.*');
 });
 
+Route::get('/admin/{any?}', function () {
+    return view('admin');
+})->where('any', '.*');
+
 Route::get('/', function () {
     return redirect('/en-MY');
 });
 
 Route::get('/{any}', function ($any) {
     return redirect('/en-MY/' . $any);
-})->where('any', '^(?!api).*');
+})->where('any', '^(?!api|admin).*');
