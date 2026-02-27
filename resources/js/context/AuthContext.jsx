@@ -67,8 +67,13 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    // Merge updated fields into the current user object
+    const updateUser = (updatedFields) => {
+        setUser(prev => prev ? { ...prev, ...updatedFields } : prev);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, loading, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

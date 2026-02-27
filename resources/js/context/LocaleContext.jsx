@@ -9,11 +9,18 @@ export const LocaleProvider = ({ children }) => {
         return supported.includes(path) ? path : 'en-MY';
     };
 
-    const [locale, setLocale] = useState(getLocaleFromUrl());
+    const [locale, setLocale] = useState(getLocaleFromUrl);
 
     useEffect(() => {
         document.documentElement.lang = locale;
     }, [locale]);
+
+    // Keep locale in sync when user navigates via browser back/forward buttons
+    useEffect(() => {
+        const syncLocale = () => setLocale(getLocaleFromUrl());
+        window.addEventListener('popstate', syncLocale);
+        return () => window.removeEventListener('popstate', syncLocale);
+    }, []);
 
     const switchLanguage = (newLocale) => {
         setLocale(newLocale);

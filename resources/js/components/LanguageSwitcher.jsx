@@ -18,9 +18,8 @@ const LanguageSwitcher = () => {
         if (newLocale === locale) return;
 
         const path = location.pathname;
-        const pathWithoutLocale = path.replace(`/${locale}`, '') || '/';
-
-        let finalPath = `/${newLocale}/${pathWithoutLocale}`;
+        const pathWithoutLocale = path.replace(`/${locale}`, '').replace(/^\/+/, '');
+        const finalPath = pathWithoutLocale ? `/${newLocale}/${pathWithoutLocale}` : `/${newLocale}`;
 
         switchLanguage(newLocale);
         navigate(finalPath);

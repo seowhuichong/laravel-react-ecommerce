@@ -14,16 +14,14 @@ class AdminSeeder extends Seeder
         $password = 'admin123';
 
         Admin::updateOrCreate(
-            ['email' => 'admin@admin.com'],
-            [
-                'name' => 'Super Admin',
-                'email' => 'admin@admin.com',
-                'password' => Hash::make($password),
-            ]
+        ['email' => 'admin@admin.com'],
+        [
+            'name' => 'Super Admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make($password),
+        ]
         );
 
-        $this->command->info('✅ Admin seeded successfully!');
-        $this->command->line('   Email   : admin@admin.com');
-        $this->command->line('   Password: ' . $password);
+        $this->command->info('Admin seeded successfully!');
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
@@ -16,6 +18,16 @@ Route::post('/login', [AuthController::class, 'login'])
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/profile/password', [AuthController::class, 'updatePassword']);
+
+    // User Addresses
+    Route::get('/addresses', [UserAddressController::class, 'index']);
+    Route::post('/addresses', [UserAddressController::class, 'store']);
+    Route::get('/addresses/{id}', [UserAddressController::class, 'show']);
+    Route::put('/addresses/{id}', [UserAddressController::class, 'update']);
+    Route::delete('/addresses/{id}', [UserAddressController::class, 'destroy']);
+    Route::patch('/addresses/{id}/set-default', [UserAddressController::class, 'setDefault']);
 });
 
 Route::prefix('{locale}')
@@ -23,6 +35,7 @@ Route::prefix('{locale}')
     ->group(function () {
         Route::get('/products/{friendly_url}', [ProductController::class, 'getInfoByFriendlyUrl']);
         Route::get('/settings', [SettingsController::class, 'index']);
+        Route::get('/categories', [CategoryController::class, 'index']);
     });
 
 Route::prefix('admin')->group(function () {
@@ -37,6 +50,8 @@ Route::prefix('admin')->group(function () {
 
             Route::get('/customers', [AdminUserController::class, 'index']);
             Route::get('/customers/{id}', [AdminUserController::class, 'show']);
+            Route::put('/customers/{id}', [AdminUserController::class, 'update']);
+            Route::delete('/customers/{id}', [AdminUserController::class, 'destroy']);
 
             Route::get('/products', [AdminProductController::class, 'index']);
             Route::get('/products/{id}', [AdminProductController::class, 'show']);
