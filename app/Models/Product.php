@@ -32,4 +32,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductTranslation::class, 'products_id', 'products_id');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(
+            \App\Models\Category::class,
+            'product_categories',
+            'products_id',
+            'category_id'
+        )->with('translations');
+    }
 }

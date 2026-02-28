@@ -19,7 +19,7 @@ class AdminProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with('translations')->findOrFail($id);
+        $product = Product::with(['translations', 'categories.translations'])->findOrFail($id);
         return response()->json(['product' => $product]);
     }
 
@@ -56,11 +56,44 @@ class AdminProductController extends Controller
             'product_image' => 'nullable|string|max:200',
             'product_status' => 'sometimes|in:Active,Inactive',
             'product_friendly_url' => 'sometimes|string|max:150|unique:products,product_friendly_url,' . $id . ',products_id',
+
+            // Translations: optional object keyed by locale
+            'translations' => 'sometimes|array',
+            'translations.*.product_name' => 'sometimes|string|max:255',
+            'translations.*.product_description' => 'sometimes|nullable|string',
+            'translations.*.product_meta_title' => 'sometimes|nullable|string|max:255',
+            'translations.*.product_meta_description' => 'sometimes|nullable|string|max:500',
+
+            // Category linking
+            'category_ids' => 'sometimes|array',
+            'category_ids.*' => 'integer|exists:categories,id',
         ]);
 
-        $product->update($validated);
+        // Update core product fields (everything except translations + category_ids)
+        $coreFields = collect($validated)->except(['translations', 'category_ids'])->toArray();
+        if (!empty($coreFields)) {
+            $product->update($coreFields);
+        }
 
-        return response()->json(['message' => 'Product updated', 'product' => $product->fresh()]);
+        // Upsert translations
+        if (!empty($validated['translations'])) {
+            foreach ($validated['translations'] as $locale => $fields) {
+                $product->translations()->updateOrCreate(
+                    ['language_code' => $locale],
+                    array_filter($fields, fn($v) => $v !== null)
+                );
+            }
+        }
+
+        // Sync categories
+        if (array_key_exists('category_ids', $validated)) {
+            $product->categories()->sync($validated['category_ids']);
+        }
+
+        return response()->json([
+            'message' => 'Product updated',
+            'product' => $product->fresh(['translations', 'categories.translations']),
+        ]);
     }
 
     public function destroy($id)

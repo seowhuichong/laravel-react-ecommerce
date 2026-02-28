@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Admin\AdminProductController;
+use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -58,6 +59,12 @@ Route::prefix('admin')->group(function () {
             Route::post('/products', [AdminProductController::class, 'store']);
             Route::put('/products/{id}', [AdminProductController::class, 'update']);
             Route::delete('/products/{id}', [AdminProductController::class, 'destroy']);
+
+            Route::get('/categories', [AdminCategoryController::class, 'index']);
+            Route::get('/categories/{id}', [AdminCategoryController::class, 'show']);
+            Route::post('/categories', [AdminCategoryController::class, 'store']);
+            Route::put('/categories/{id}', [AdminCategoryController::class, 'update']);
+            Route::delete('/categories/{id}', [AdminCategoryController::class, 'destroy']);
         }
     );
 });
