@@ -37,6 +37,7 @@ Route::prefix('{locale}')
         Route::get('/products/{friendly_url}', [ProductController::class, 'getInfoByFriendlyUrl']);
         Route::get('/settings', [SettingsController::class, 'index']);
         Route::get('/categories', [CategoryController::class, 'index']);
+        Route::get('/categories/{slug}', [CategoryController::class, 'show']);
     });
 
 Route::prefix('admin')->group(function () {

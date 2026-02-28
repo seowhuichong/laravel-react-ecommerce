@@ -9,6 +9,7 @@ import { CategoryProvider } from './context/CategoryContext';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Product from './pages/Product';
+import CategoryPage from './pages/CategoryPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Account/Profile';
@@ -38,6 +39,7 @@ function App() {
                                     <Route path="/:locale">
                                         <Route index element={<Home />} />
                                         <Route path="product/:friendly_url" element={<Product />} />
+                                        <Route path="category/:friendly_url" element={<CategoryPage />} />
                                         <Route path="login" element={<Login />} />
                                         <Route path="register" element={<Register />} />
 
