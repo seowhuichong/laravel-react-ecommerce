@@ -35,15 +35,21 @@ class CategoryController extends Controller
 
     /**
      * Recursively format a collection of Category models into a plain array.
+     * Each node receives a `path` field like "Health › Vitamins › Vitamin C".
      */
-    private function formatTree($categories, string $locale): array
+    private function formatTree($categories, string $locale, string $parentPath = ''): array
     {
-        return $categories->map(fn(Category $cat) => [
-            'id' => $cat->id,
-            'slug' => $cat->slug,
-            'name' => $cat->translation($locale),
-            'image' => $cat->image,
-            'children' => $this->formatTree($cat->children, $locale),
-        ])->values()->all();
+        return $categories->map(function (Category $cat) use ($locale, $parentPath) {
+            $name = $cat->translation($locale);
+            $path = $parentPath ? "{$parentPath} › {$name}" : $name;
+            return [
+                'id' => $cat->id,
+                'slug' => $cat->slug,
+                'name' => $name,
+                'path' => $path,
+                'image' => $cat->image,
+                'children' => $this->formatTree($cat->children, $locale, $path),
+            ];
+        })->values()->all();
     }
 }

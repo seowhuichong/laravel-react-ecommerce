@@ -12,25 +12,6 @@ const LOCALES = [
 const fmt = (d) => d ? new Date(d).toLocaleDateString() : '—';
 const myr = (v) => Number(v || 0).toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
 
-function getCatName(cat) {
-    return cat?.translations?.find(t => t.language_code === 'en-MY')?.name
-        ?? cat?.translations?.[0]?.name
-        ?? cat?.slug ?? `#${cat?.id}`;
-}
-
-/** Build a readable path for a category given the full flat list */
-function getCatPath(cat, allCats) {
-    const parts = [getCatName(cat)];
-    let current = cat;
-    for (let i = 0; i < 5; i++) {
-        if (!current.parent_id) break;
-        const parent = allCats.find(c => c.id === current.parent_id);
-        if (!parent) break;
-        parts.unshift(getCatName(parent));
-        current = parent;
-    }
-    return parts.join(' › ');
-}
 
 /* ── Confirm Modal ── */
 function ConfirmDialog({ message, onConfirm, onCancel }) {
@@ -498,7 +479,7 @@ export default function ProductProfile() {
 
                         const filtered = leafCats.filter(c => {
                             if (selectedCatIds.includes(c.id)) return false;
-                            const path = getCatPath(c, allCats).toLowerCase();
+                            const path = (c.path ?? '').toLowerCase();
                             return !catSearch.trim() || path.includes(catSearch.toLowerCase());
                         });
 
@@ -528,7 +509,7 @@ export default function ProductProfile() {
                                         selectedCats.map(cat => (
                                             <span key={cat.id}
                                                 className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
-                                                <span className="max-w-[200px] truncate">{getCatPath(cat, allCats)}</span>
+                                                <span className="max-w-[200px] truncate">{cat.path}</span>
                                                 <button
                                                     onClick={() => setSelectedCatIds(prev => prev.filter(i => i !== cat.id))}
                                                     className="text-indigo-300 hover:text-indigo-700 transition-colors flex-shrink-0">
@@ -564,7 +545,7 @@ export default function ProductProfile() {
                                                     <svg className="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                                     </svg>
-                                                    <span className="text-sm text-slate-700 group-hover:text-indigo-700 truncate">{getCatPath(cat, allCats)}</span>
+                                                    <span className="text-sm text-slate-700 group-hover:text-indigo-700 truncate">{cat.path}</span>
                                                 </button>
                                             ))
                                         )}

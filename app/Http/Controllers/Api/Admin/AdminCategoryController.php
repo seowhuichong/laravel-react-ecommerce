@@ -18,6 +18,22 @@ class AdminCategoryController extends Controller
     }
 
     /**
+     * Build a readable English path by walking up the parent chain.
+     * Requires 'parent.translations' to be eager-loaded.
+     * Example: "Health › Vitamins › Vitamin C"
+     */
+    private function getPath(Category $cat): string
+    {
+        $parts = [$cat->translation('en-MY')];
+        $current = $cat;
+        while ($current->parent) {
+            array_unshift($parts, $current->parent->translation('en-MY'));
+            $current = $current->parent;
+        }
+        return implode(' › ', $parts);
+    }
+
+    /**
      * Return ALL categories (active + inactive) as a flat list,
      * enriched with their translations and parent name.
      */
@@ -26,7 +42,13 @@ class AdminCategoryController extends Controller
         $categories = Category::with(['translations', 'parent.translations'])
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->map(function (Category $cat) {
+                $data = $cat->toArray();
+                $data['path'] = $this->getPath($cat);
+                return $data;
+            })
+            ->values();
 
         return response()->json(['categories' => $categories]);
     }
@@ -39,7 +61,10 @@ class AdminCategoryController extends Controller
             'children.translations',
         ])->findOrFail($id);
 
-        return response()->json(['category' => $category]);
+        $data = $category->toArray();
+        $data['path'] = $this->getPath($category);
+
+        return response()->json(['category' => $data]);
     }
 
     public function store(Request $request)
